@@ -190,4 +190,30 @@ public class AddressUtilsTests {
 		Assert.That(flr == address);
 	}
 
+
+
+	// isBldg
+//
+//	public void isBldg_Simple() {
+//		string address = "g-b(123,456)-l1-b(7,8)";
+//		bool itIsABldg = AddressUtils.isBldg (address);
+//		Assert.That (itIsABldg);
+//
+//		address = "g-b(123,456)-l1-b(7,8)-l0";
+//		bool itIsNotABldg = AddressUtils.isBldg (address);
+//		Assert.That (!itIsNotABldg);
+//	}
+
+
+	// generateInsideAddress
+
+//	public void generateInsideAddress_Simple() {
+//		string address = "g-b(123,456)-l1-b(7,8)";
+//		string insideAddress = AddressUtils.generateInsideAddress (address);
+//		Assert.That (insideAddress == "g-b(123,456)-l1-b(7,8)-l0");
+//
+//		address = "g-b(123,456)-l1-b(7,8)-l0";
+//		insideAddress = AddressUtils.generateInsideAddress (address);
+//		Assert.That (insideAddress == address);
+//	}
 }
