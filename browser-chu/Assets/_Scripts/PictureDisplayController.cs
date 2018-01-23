@@ -6,6 +6,6 @@ public class PictureDisplayController : MonoBehaviour {
 
 	void OnMouseDown() {
 		Debug.Log ("Mouse down on pic display!");
-		gameObject.GetComponentInParent<BuildingController> ().openUserInBrowser ();
+		gameObject.GetComponentInParent<BuildingController> ().handleClick ("USER");
 	}
 }

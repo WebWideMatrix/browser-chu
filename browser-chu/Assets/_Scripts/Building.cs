@@ -14,6 +14,8 @@ namespace Models
 
 		public Summary summary;
 
+		public bool isComposite;
+
 		public string flr;
 
 		public string contentType;

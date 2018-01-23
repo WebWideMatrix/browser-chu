@@ -28,6 +28,16 @@ public class AddressController : MonoBehaviour {
 		
 	}
 
+	public void GoToBldg(string address) {
+		currentAddress = address;
+		if (AddressUtils.isBldg(address)) {
+			currentAddress = AddressUtils.generateInsideAddress (address);
+		}
+		InputField input = GameObject.FindObjectOfType<InputField> ();
+		input.text = currentAddress;
+		AddressChanged ();
+	}
+
 	public void GoIn() {
 		InputField input = GameObject.FindObjectOfType<InputField> ();
 		currentAddress = input.text;
@@ -75,15 +85,6 @@ public class AddressController : MonoBehaviour {
 		// TODO check whether it changed
 
 		switchAddress (currentAddress);
-
-//		string json = @"{""y"":82,""x"":118,""key"":""932931363233247232"",""flr"":""g-b(101,20)-l0-b(2,0)-l0"",
-//					   ""contentType"":""twitter-social-post"",""address"":""g-b(101,20)-l0-b(2,0)-l0-b(118,82)"",
-//					   ""summary"":{""user"":{""screen_name"":""machinelearnbot"",
-//					   ""profile_text_color"":""000000"",""profile_background_color"":""000000"",
-//					   ""name"":""Machine Learning""},
-//					   ""text"":""RT @Ronald_vanLoon: How Uber Uses Big Data to Optimize Customer Experience | #BigData #CX #RT https://t.co/6GlLaVTXes https://t.co/XYakYFpS…""}}";
-//		Building bldg = UnityEngine.JsonUtility.FromJson<Building>(json);
-//		Debug.Log (bldg);
 	}
 
 	void switchAddress(string address) {
@@ -111,7 +112,7 @@ public class AddressController : MonoBehaviour {
 					GameObject bldgClone = (GameObject) Instantiate(bldg, baseline, Quaternion.identity);
 					bldgClone.tag = "Building";
 					BuildingController controller = bldgClone.GetComponentInChildren<BuildingController>();
-					controller.initialize(b);
+					controller.initialize(b, this);
 					Text[] labels = bldgClone.GetComponentsInChildren<Text>();
 					foreach (Text label in labels) {
 						if (label.name == "TwitText")

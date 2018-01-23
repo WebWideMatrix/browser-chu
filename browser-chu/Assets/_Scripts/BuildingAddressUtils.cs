@@ -46,6 +46,18 @@ namespace Utils {
 			return addr;
 		}
 
+		public static bool isBldg(string addr) {
+			// returns indication whether the addr corresponds to a bldg
+			string[] parts = addr.Split (DELIM_CHAR_ARRAY);
+			return parts [parts.Length - 1].StartsWith ("b");
+		}
+
+		public static string generateInsideAddress(string addr) {
+			if (isBldg (addr)) {
+				addr = addr + "-l0";
+			}
+			return addr;
+		}
 
 		public static string getBldg(string addr) {
 			// returns the current bldg, i.e., if the addr is a flr - removes the last part
