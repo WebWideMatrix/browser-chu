@@ -6,6 +6,6 @@ public class TextDisplayController : MonoBehaviour {
 
 	void OnMouseDown() {
 		Debug.Log ("Mouse down on text display!");
-		gameObject.GetComponentInParent<BuildingController> ().openInBrowser ();
+		gameObject.GetComponentInParent<BuildingController> ().handleClick ("CONTENT");
 	}
 }

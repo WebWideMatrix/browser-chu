@@ -8,8 +8,11 @@ public class BuildingController : MonoBehaviour {
 
 	public Building model;
 
-	public void initialize(Building theModel) {
+	public AddressController addressController;
+
+	public void initialize(Building theModel, AddressController addrCtl) {
 		this.model = theModel;
+		this.addressController = addrCtl;
 	}
 
 	// Use this for initialization
@@ -22,17 +25,35 @@ public class BuildingController : MonoBehaviour {
 		
 	}
 
-	public void openInBrowser() {
-		Debug.Log ("Opening in browser: " + this.model.address);
-		string externalUrl = this.model.summary.external_url;
-		Application.OpenURL (externalUrl);
+	public void handleClick(string context) {
+		if (this.model.isComposite) {
+			Debug.Log ("~~~~~~~~~~Got address controller");
+			Debug.Log (addressController);
+			addressController.GoToBldg (this.model.address);
+		} else {
+			openInBrowser (context);
+		}
 	}
 
-	public void openUserInBrowser() {
-		// TWITTER POST BLDG ONLY
-		Debug.Log ("Opening in browser: " + this.model.summary.user.screen_name);
-		string externalUrl = "http://twitter.com/" + this.model.summary.user.screen_name;
-		Application.OpenURL (externalUrl);
+	public void openInBrowser(string context) {
+		string externalUrl = null;
+		switch (context) {
+			case "CONTENT":
+			{
+				Debug.Log ("Opening in browser: " + this.model.address);
+				externalUrl = this.model.summary.external_url;
+				break;
+			}
+			case "USER":
+			{
+				// TWITTER POST BLDG ONLY
+				Debug.Log ("Opening in browser: " + this.model.summary.user.screen_name);
+				externalUrl = "http://twitter.com/" + this.model.summary.user.screen_name;
+				break;
+			}
+		}
+		if (externalUrl != null)
+			Application.OpenURL (externalUrl);
 	}
 
 	public void renderAuthorPicture() {
