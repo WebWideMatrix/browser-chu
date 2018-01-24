@@ -10,7 +10,11 @@ using Utils;
 public class AddressController : MonoBehaviour {
 
 
-	public GameObject bldg;
+	public GameObject twitBldg;
+	public GameObject articleBldg;
+	public GameObject conceptBldg;
+	public GameObject dailyFeedBldg;
+	public GameObject userBldg;
 
 	string basePath = "http://localhost:4000/api";
 
@@ -109,7 +113,8 @@ public class AddressController : MonoBehaviour {
 					Vector3 baseline = new Vector3(-198, 6.5F, -198);	// WHY? if you set the correct Y, some images fail to display
 					baseline.x += b.x * 2;
 					baseline.z += b.y * 2;
-					GameObject bldgClone = (GameObject) Instantiate(bldg, baseline, Quaternion.identity);
+					GameObject prefab = getPrefabByEntityClass(b.contentType);
+					GameObject bldgClone = (GameObject) Instantiate(prefab, baseline, Quaternion.identity);
 					bldgClone.tag = "Building";
 					BuildingController controller = bldgClone.GetComponentInChildren<BuildingController>();
 					controller.initialize(b, this);
@@ -119,12 +124,29 @@ public class AddressController : MonoBehaviour {
 							label.text = b.summary.text;
 						else if (label.name == "AuthorName")
 							label.text = b.summary.user.name;
+						else if (label.name == "ArticleTitle")
+							label.text = b.summary.metadata.title;					
+						else if (label.name == "SiteName") {
+							if (b.summary.metadata.site != null)
+								label.text = b.summary.metadata.site;
+						}
 					}
 					Debug.Log("About to call renderAuthorPicture on bldg " + count);
-					controller.renderAuthorPicture();
+					controller.renderMainPicture();
 				}
 
 			});
+	}
+
+	GameObject getPrefabByEntityClass(string contentType) {
+		switch (contentType) {
+		case "twitter-social-post":
+			return twitBldg;
+		case "article-text":
+			return articleBldg;
+		default:
+			return twitBldg;
+		}
 	}
 
 	void updateFloorSign() {

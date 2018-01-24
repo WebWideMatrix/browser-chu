@@ -27,8 +27,6 @@ public class BuildingController : MonoBehaviour {
 
 	public void handleClick(string context) {
 		if (this.model.isComposite) {
-			Debug.Log ("~~~~~~~~~~Got address controller");
-			Debug.Log (addressController);
 			addressController.GoToBldg (this.model.address);
 		} else {
 			openInBrowser (context);
@@ -36,40 +34,87 @@ public class BuildingController : MonoBehaviour {
 	}
 
 	public void openInBrowser(string context) {
-		string externalUrl = null;
-		switch (context) {
-			case "CONTENT":
-			{
-				Debug.Log ("Opening in browser: " + this.model.address);
-				externalUrl = this.model.summary.external_url;
-				break;
-			}
-			case "USER":
-			{
-				// TWITTER POST BLDG ONLY
-				Debug.Log ("Opening in browser: " + this.model.summary.user.screen_name);
-				externalUrl = "http://twitter.com/" + this.model.summary.user.screen_name;
-				break;
-			}
-		}
+		string externalUrl = this.getExternalURLByContext (context);
 		if (externalUrl != null)
 			Application.OpenURL (externalUrl);
 	}
 
-	public void renderAuthorPicture() {
-		Debug.Log ("renderAuthorPicture called for " + this.model.key);
-		StartCoroutine (loadAuthorPicture ());
+	public void renderMainPicture() {
+		StartCoroutine (loadMainPicture ());
 	}
 
-	IEnumerator loadAuthorPicture() {
-		Debug.Log ("loadAuthorPicture called for " + this.model.key);
-		using (WWW www = new WWW (this.model.picture)) {
+	IEnumerator loadMainPicture() {
+		string pictureUrl = this.getMainPicture ();
+		// handle null
+		using (WWW www = new WWW (pictureUrl)) {
 			yield return www;
 			if (www.isDone)
-				Debug.Log ("Finished loading: " + this.model.picture);
+				Debug.Log ("Finished loading: " + pictureUrl);
 			if (www.texture) {
 				this.gameObject.GetComponentInChildren<Renderer> ().material.mainTexture = www.texture;
 			}
 		}
+	}
+
+
+	public string getMainPicture() {
+		string pictureUrl = null;
+		switch (this.model.contentType) {
+		case "twitter-social-post":
+			pictureUrl = this.model.picture;
+			break;
+		case "article-text": 
+			pictureUrl = this.model.summary.metadata.image_url;
+			break;
+		default:
+			pictureUrl = this.model.picture;
+			break;
+		}
+		return pictureUrl;
+	}
+
+	public string getExternalURLByContext(string context) {
+		switch (this.model.contentType) {
+		case "twitter-social-post":
+			return getExternalURLByContext_twit (context);
+		case "article-text":
+			return getExternalURLByContext_article (context);
+		default:
+			return null;
+		}
+	}
+
+	public string getExternalURLByContext_twit(string context) {
+		string url = null;
+		switch (context) {
+		case "CONTENT":
+			{
+				url = this.model.summary.external_url;
+				break;
+			}
+		case "USER":
+			{
+				url = "http://twitter.com/" + this.model.summary.user.screen_name;
+				break;
+			}
+		}
+		return url;
+	}
+
+	public string getExternalURLByContext_article(string context) {
+		string url = null;
+		switch (context) {
+		case "CONTENT":
+			{
+				url = this.model.payload.url;
+				break;
+			}
+		case "USER":
+			{
+				url = this.model.payload.url;
+				break;
+			}
+		}
+		return url;
 	}
 }
