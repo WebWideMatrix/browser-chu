@@ -24,6 +24,8 @@ namespace Models
 
 		public string picture;
 
+		public Payload payload;
+
 		public override string ToString(){
 			return UnityEngine.JsonUtility.ToJson (this, true);
 		}
@@ -38,10 +40,33 @@ namespace Models
 		public string name;
 	}
 
+
+	[Serializable]
+	public struct ArticleMetadata
+	{
+		public string title;
+		public string image_url;
+		public string site;
+	}
+
+
+	[Serializable]
+	public struct Payload
+	{
+		// article-text
+		public string url;
+		public string display_url;
+		// twitter-social-post
+		public int reshare_count;
+		public int favorite_count;
+	}
+
+
 	[Serializable]
 	public struct Summary
 	{
 		public UserSummary user;
+		public ArticleMetadata metadata;
 		public string text;
 		public string external_url;
 		public DateTime created_at;
