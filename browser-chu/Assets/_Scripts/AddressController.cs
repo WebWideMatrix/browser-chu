@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Proyecto26;
 using Models;
 using Utils;
+using System;
 
 
 public class AddressController : MonoBehaviour {
@@ -120,7 +121,13 @@ public class AddressController : MonoBehaviour {
 					controller.initialize(b, this);
 					Text[] labels = bldgClone.GetComponentsInChildren<Text>();
 					foreach (Text label in labels) {
-						if (label.name == "TwitText")
+						if (label.name == "DayInWeek")
+							label.text = extractDatePart(b.key, "DayInWeek");	
+						else if (label.name == "Month")
+							label.text = extractDatePart(b.key, "Month");	
+						else if (label.name == "Date")
+							label.text = extractDatePart(b.key, "Date");	
+						else if (label.name == "TwitText")
 							label.text = b.summary.text;
 						else if (label.name == "AuthorName")
 							label.text = b.summary.user.name;
@@ -144,6 +151,8 @@ public class AddressController : MonoBehaviour {
 			return twitBldg;
 		case "article-text":
 			return articleBldg;
+		case "daily-feed":
+			return dailyFeedBldg;
 		default:
 			return twitBldg;
 		}
@@ -154,5 +163,32 @@ public class AddressController : MonoBehaviour {
 		flrSign.text = currentFlr.ToUpper ();
 	}
 
+	string extractDatePart(string date, string part) {
+		// for sample input: "2017-Nov-26"
+		// if part = "DayInWeek", return: "Sunday"
+		// if part = "Month", return: "Nov"
+		// if part = "Date", return: "26"
+		// if part = "Year", return: "2017"
+		char[] delim = new char[] {'-'};
+		string[] parts = date.Split (delim);
+		if (parts.Length != 3) {
+			Debug.LogError ("Wrong date format: " + date);
+			return "Error";
+		}
+		switch (part) {
+		case "Year":
+			return parts [0];
+		case "Month":
+			return parts [1];
+		case "Date":
+			return parts [2];
+		case "DayInWeek":
+			DateTime d = Convert.ToDateTime (date);
+			return d.ToString("dddd");
+		default:
+			Debug.LogError ("Unexpected argument: " + part);
+			return "Error";
+		}
+	}
 
 }

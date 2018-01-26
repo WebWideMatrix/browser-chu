@@ -1712,7 +1712,8 @@ MonoBehaviour:
   articleBldg: {fileID: 1344107764396210, guid: 64bc94436377a46c68a45708315bbf25,
     type: 2}
   conceptBldg: {fileID: 0}
-  dailyFeedBldg: {fileID: 0}
+  dailyFeedBldg: {fileID: 1344107764396210, guid: 22337c40d35d343cbafc9b7eb34ae71d,
+    type: 2}
   userBldg: {fileID: 0}
 --- !u!4 &1521724980
 Transform:
