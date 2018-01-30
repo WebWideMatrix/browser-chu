@@ -65,6 +65,8 @@ namespace Models
 	[Serializable]
 	public struct Summary
 	{
+		public string name;
+		public string picture;
 		public UserSummary user;
 		public ArticleMetadata metadata;
 		public string text;

@@ -6,6 +6,7 @@ using Proyecto26;
 using Models;
 using Utils;
 using System;
+using UnityEngine.SceneManagement;
 
 
 public class AddressController : MonoBehaviour {
@@ -17,6 +18,7 @@ public class AddressController : MonoBehaviour {
 	public GameObject dailyFeedBldg;
 	public GameObject userBldg;
 
+	// TODO get from configuration
 	string basePath = "http://localhost:4000/api";
 
 	string currentAddress;
@@ -25,7 +27,14 @@ public class AddressController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		if (currentAddress == null) {
+			if (PlayerPrefs.GetString ("currentAddress") != null) {
+				currentAddress = PlayerPrefs.GetString ("currentAddress");
+			} else {
+				currentAddress = "g";
+			}
+			AddressChanged ();
+		}
 	}
 	
 	// Update is called once per frame
@@ -38,8 +47,6 @@ public class AddressController : MonoBehaviour {
 		if (AddressUtils.isBldg(address)) {
 			currentAddress = AddressUtils.generateInsideAddress (address);
 		}
-		InputField input = GameObject.FindObjectOfType<InputField> ();
-		input.text = currentAddress;
 		AddressChanged ();
 	}
 
@@ -54,7 +61,7 @@ public class AddressController : MonoBehaviour {
 		InputField input = GameObject.FindObjectOfType<InputField> ();
 
 		currentAddress = AddressUtils.getContainerFlr(input.text);
-		input.text = currentAddress;
+
 		AddressChanged ();
 	}
 
@@ -64,7 +71,6 @@ public class AddressController : MonoBehaviour {
 		currentAddress = input.text;
 		int level = AddressUtils.getFlrLevel(currentAddress);
 		currentAddress = AddressUtils.replaceFlrLevel (currentAddress, level + 1);
-		input.text = currentAddress;
 		AddressChanged ();
 	}
 
@@ -76,24 +82,43 @@ public class AddressController : MonoBehaviour {
 		if (level > 0) {
 			currentAddress = AddressUtils.replaceFlrLevel (currentAddress, level - 1);
 		}
-		input.text = currentAddress;
 		AddressChanged ();
 	}
 
 
 	public void AddressChanged() {
 		Debug.Log ("Address changed to: " + currentAddress);
+		InputField input = GameObject.FindObjectOfType<InputField> ();
+		if (input.text != currentAddress) {
+			input.text = currentAddress;
+		}
+
+		PlayerPrefs.SetString ("currentAddress", currentAddress);
+
 		// TODO validate address
 
 		currentFlr = AddressUtils.extractFlr(currentAddress);
 
 		// TODO check whether it changed
 
+		// check whether we need to switch scene
+		if (currentAddress.ToLower () == "g" && SceneManager.GetActiveScene().name == "Floor") {
+			SceneManager.LoadScene ("Ground");
+			return;
+		}
+		if (currentAddress.ToLower () != "g" && SceneManager.GetActiveScene().name == "Ground") {
+			SceneManager.LoadScene ("Floor");
+			return;
+		}
+
+		// load the new address
 		switchAddress (currentAddress);
 	}
 
 	void switchAddress(string address) {
-		updateFloorSign ();
+		if (address.ToLower() != "g") {
+			updateFloorSign ();
+		}
 
 		GameObject[] currentFlrBuildings = GameObject.FindGameObjectsWithTag("Building");
 		foreach (GameObject bldg in currentFlrBuildings) {
@@ -133,6 +158,8 @@ public class AddressController : MonoBehaviour {
 							label.text = b.summary.user.name;
 						else if (label.name == "ArticleTitle")
 							label.text = b.summary.metadata.title;					
+						else if (label.name == "UserName")
+							label.text = b.summary.name;							
 						else if (label.name == "SiteName") {
 							if (b.summary.metadata.site != null)
 								label.text = b.summary.metadata.site;
@@ -153,6 +180,8 @@ public class AddressController : MonoBehaviour {
 			return articleBldg;
 		case "daily-feed":
 			return dailyFeedBldg;
+		case "user":
+			return userBldg;
 		default:
 			return twitBldg;
 		}

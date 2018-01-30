@@ -40,7 +40,9 @@ public class BuildingController : MonoBehaviour {
 	}
 
 	public void renderMainPicture() {
-		StartCoroutine (loadMainPicture ());
+		if (this.getMainPicture () != "null") {
+			StartCoroutine (loadMainPicture ());
+		}
 	}
 
 	IEnumerator loadMainPicture() {
@@ -66,6 +68,9 @@ public class BuildingController : MonoBehaviour {
 		case "article-text": 
 			pictureUrl = this.model.summary.metadata.image_url;
 			break;
+		case "user": 
+			pictureUrl = this.model.summary.picture;
+			break;		
 		default:
 			pictureUrl = this.model.picture;
 			break;
