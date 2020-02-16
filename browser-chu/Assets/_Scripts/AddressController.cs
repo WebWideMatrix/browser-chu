@@ -137,6 +137,8 @@ public class AddressController : MonoBehaviour {
 
 
 					Vector3 baseline = new Vector3(-198, 6.5F, -198);	// WHY? if you set the correct Y, some images fail to display
+					Debug.Log(b.name);
+					Debug.Log(b.x + ", " + b.y);
 					baseline.x += b.x * 2;
 					baseline.z += b.y * 2;
 					GameObject prefab = getPrefabByEntityClass(b.entity_type);
@@ -155,7 +157,7 @@ public class AddressController : MonoBehaviour {
 						else if (label.name == "TwitText")
 							label.text = b.summary;
 						else if (label.name == "AuthorName")
-							label.text = b.summary;
+							label.text = b.name;
 						else if (label.name == "ArticleTitle")
 							label.text = b.summary;					
 						else if (label.name == "UserName")

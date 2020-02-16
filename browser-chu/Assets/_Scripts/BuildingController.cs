@@ -40,7 +40,8 @@ public class BuildingController : MonoBehaviour {
 	}
 
 	public void renderMainPicture() {
-		if (this.getMainPicture () != "null") {
+		string pic = this.getMainPicture ();
+		if (pic != "" && pic != "null") {
 			StartCoroutine (loadMainPicture ());
 		}
 	}
