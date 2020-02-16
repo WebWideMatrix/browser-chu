@@ -26,7 +26,7 @@ public class BuildingController : MonoBehaviour {
 	}
 
 	public void handleClick(string context) {
-		if (this.model.isComposite) {
+		if (this.model.is_composite) {
 			addressController.GoToBldg (this.model.address);
 		} else {
 			openInBrowser (context);
@@ -60,33 +60,11 @@ public class BuildingController : MonoBehaviour {
 
 
 	public string getMainPicture() {
-		string pictureUrl = null;
-		switch (this.model.contentType) {
-		case "twitter-social-post":
-			pictureUrl = this.model.picture;
-			break;
-		case "article-text": 
-			pictureUrl = this.model.summary.metadata.image_url;
-			break;
-		case "user": 
-			pictureUrl = this.model.summary.picture;
-			break;		
-		default:
-			pictureUrl = this.model.picture;
-			break;
-		}
-		return pictureUrl;
+		return this.model.picture_url;
 	}
 
 	public string getExternalURLByContext(string context) {
-		switch (this.model.contentType) {
-		case "twitter-social-post":
-			return getExternalURLByContext_twit (context);
-		case "article-text":
-			return getExternalURLByContext_article (context);
-		default:
-			return null;
-		}
+		return this.model.web_url;
 	}
 
 	public string getExternalURLByContext_twit(string context) {
@@ -94,12 +72,12 @@ public class BuildingController : MonoBehaviour {
 		switch (context) {
 		case "CONTENT":
 			{
-				url = this.model.summary.external_url;
+				url = this.model.web_url;
 				break;
 			}
 		case "USER":
 			{
-				url = "http://twitter.com/" + this.model.summary.user.screen_name;
+				url = this.model.web_url;
 				break;
 			}
 		}
@@ -111,12 +89,12 @@ public class BuildingController : MonoBehaviour {
 		switch (context) {
 		case "CONTENT":
 			{
-				url = this.model.payload.url;
+				url = this.model.web_url;
 				break;
 			}
 		case "USER":
 			{
-				url = this.model.payload.url;
+				url = this.model.web_url;
 				break;
 			}
 		}

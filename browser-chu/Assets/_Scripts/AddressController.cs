@@ -19,7 +19,7 @@ public class AddressController : MonoBehaviour {
 	public GameObject userBldg;
 
 	// TODO get from configuration
-	string basePath = "http://localhost:4000/api";
+	string basePath = "http://localhost:4000/v1";
 
 	string currentAddress;
 	string currentFlr;
@@ -128,7 +128,7 @@ public class AddressController : MonoBehaviour {
 		// We can add default request headers for all requests
 		RestClient.DefaultRequestHeaders["Authorization"] = "Bearer ...";
 
-		RestClient.GetArray<Building>(new RequestHelper { url = basePath + "/buildings/in/" + address }).Then(res =>
+		RestClient.GetArray<Building>(new RequestHelper { url = basePath + "/bldgs/look/" + address }).Then(res =>
 			{
 				int count = 0;
 				foreach (Building b in res) {
@@ -139,7 +139,7 @@ public class AddressController : MonoBehaviour {
 					Vector3 baseline = new Vector3(-198, 6.5F, -198);	// WHY? if you set the correct Y, some images fail to display
 					baseline.x += b.x * 2;
 					baseline.z += b.y * 2;
-					GameObject prefab = getPrefabByEntityClass(b.contentType);
+					GameObject prefab = getPrefabByEntityClass(b.entity_type);
 					GameObject bldgClone = (GameObject) Instantiate(prefab, baseline, Quaternion.identity);
 					bldgClone.tag = "Building";
 					BuildingController controller = bldgClone.GetComponentInChildren<BuildingController>();
@@ -147,22 +147,22 @@ public class AddressController : MonoBehaviour {
 					Text[] labels = bldgClone.GetComponentsInChildren<Text>();
 					foreach (Text label in labels) {
 						if (label.name == "DayInWeek")
-							label.text = extractDatePart(b.key, "DayInWeek");	
+							label.text = extractDatePart(b.web_url, "DayInWeek");	
 						else if (label.name == "Month")
-							label.text = extractDatePart(b.key, "Month");	
+							label.text = extractDatePart(b.web_url, "Month");	
 						else if (label.name == "Date")
-							label.text = extractDatePart(b.key, "Date");	
+							label.text = extractDatePart(b.web_url, "Date");	
 						else if (label.name == "TwitText")
-							label.text = b.summary.text;
+							label.text = b.summary;
 						else if (label.name == "AuthorName")
-							label.text = b.summary.user.name;
+							label.text = b.summary;
 						else if (label.name == "ArticleTitle")
-							label.text = b.summary.metadata.title;					
+							label.text = b.summary;					
 						else if (label.name == "UserName")
-							label.text = b.summary.name;							
+							label.text = b.summary;							
 						else if (label.name == "SiteName") {
-							if (b.summary.metadata.site != null)
-								label.text = b.summary.metadata.site;
+							if (b.summary != null)
+								label.text = b.summary;
 						}
 					}
 					Debug.Log("About to call renderAuthorPicture on bldg " + count);
@@ -173,6 +173,7 @@ public class AddressController : MonoBehaviour {
 	}
 
 	GameObject getPrefabByEntityClass(string contentType) {
+		// TODO FIX
 		switch (contentType) {
 		case "twitter-social-post":
 			return twitBldg;

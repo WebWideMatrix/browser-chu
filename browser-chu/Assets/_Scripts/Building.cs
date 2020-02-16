@@ -10,68 +10,33 @@ namespace Models
 
 		public int y;
 
-		public string key;
+		public string web_url;
 
-		public Summary summary;
+		public string summary;
 
-		public bool isComposite;
+		public bool is_composite;
 
 		public string flr;
 
-		public string contentType;
+		public string entity_type;
+
+		public string name;
+
+		public string state;
+
+		public string category;
+
+		public string[] tags;
 
 		public string address;
 
-		public string picture;
+		public string picture_url;
 
-		public Payload payload;
+		//public Map data;
 
 		public override string ToString(){
 			return UnityEngine.JsonUtility.ToJson (this, true);
 		}
-	}
-
-	[Serializable]
-	public struct UserSummary
-	{
-		public string screen_name;
-		public string profile_text_color;
-		public string profile_background_color;
-		public string name;
-	}
-
-
-	[Serializable]
-	public struct ArticleMetadata
-	{
-		public string title;
-		public string image_url;
-		public string site;
-	}
-
-
-	[Serializable]
-	public struct Payload
-	{
-		// article-text
-		public string url;
-		public string display_url;
-		// twitter-social-post
-		public int reshare_count;
-		public int favorite_count;
-	}
-
-
-	[Serializable]
-	public struct Summary
-	{
-		public string name;
-		public string picture;
-		public UserSummary user;
-		public ArticleMetadata metadata;
-		public string text;
-		public string external_url;
-		public DateTime created_at;
 	}
 
 }
